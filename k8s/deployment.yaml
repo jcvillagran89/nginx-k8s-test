@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-lab
+  template:
+    metadata:
+      labels:
+        app: nginx-lab
+    spec:
+      containers:
+      - name: nginx
+        image: ghcr.io/jcvillagran89/nginx-k8s-lab:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
