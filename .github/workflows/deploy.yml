@@ -1,0 +1,28 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Login GHCR
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Build image
+      run: |
+        docker build -t ghcr.io/jcvillagran89/nginx-k8s-test:${{ github.sha }} .
+
+    - name: Push image
+      run: |
+        docker push ghcr.io/jcvillagran89/nginx-k8s-test:${{ github.sha }}
+
+    - name: Deploy
+      run: |
+        kubectl set image deployment/nginx-github \
+        nginx=ghcr.io/jcvillagran89/nginx-k8s-test:${{ github.sha }}
