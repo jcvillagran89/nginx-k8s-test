@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-lab-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - ccplabtxt.agarcia.com.mx
+    secretName: agarcia-cert
+  rules:
+  - host: ccplabtxt.agarcia.com.mx
+    http:
+      paths:
+      - path: /login
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-lab-service
+            port:
+              number: 80
